@@ -22,11 +22,14 @@ type API struct {
 }
 
 //NewRGW returns client for Ceph RGW
-func NewRGW(endpoint, accessKey, secretKey string) (*API, error) {
+func NewRGW(endpoint, accessKey, secretKey string, client *http.Client) (*API, error) {
 	if len(endpoint) < 1 || len(accessKey) < 1 || len(secretKey) < 1 {
 		return nil, fmt.Errorf("env RGW_ENDPOINT,RGW_ACCESS_KEY,RGW_SECRET_KEY must be no nil")
 	}
-	return &API{endpoint, accessKey, secretKey, &http.Client{}}, nil
+	if client == nil {
+		client = &http.Client{}
+	}
+	return &API{endpoint, accessKey, secretKey, client}, nil
 }
 
 //Query - make request
@@ -96,5 +99,4 @@ func getReflect(i interface{}, values *url.Values) {
 			}
 		}
 	}
-
 }
